@@ -67,10 +67,10 @@ public class InterestBatchConfig {
       .writer(itemWriter)
       .faultTolerant()
       .skip(InvalidDataException.class)
-      .skip(Exception.class)  // Permitir skip de otros tipos de excepciones
+      .skip(Exception.class) 
       .skipLimit(1000)
       .listener(interestSkipListener)
-      .taskExecutor(interestTaskExecutor())  // Agregar taskExecutor
+      .taskExecutor(interestTaskExecutor())
       .build();
   }
 

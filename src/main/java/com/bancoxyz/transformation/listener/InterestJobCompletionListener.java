@@ -47,7 +47,7 @@ public class InterestJobCompletionListener implements JobExecutionListener {
 
   @Override
   public void afterJob(@NonNull JobExecution jobExecution) {
-    logger.info("AFTER JOB - Job status: {}, Skipped items count: {}", 
+    logger.info("Job status: {}, items omitidos: {}", 
                 jobExecution.getStatus(), InterestSkipListener.skippedItems.size());
                 
     if (jobExecution.getStatus().isUnsuccessful()) {
@@ -55,9 +55,8 @@ public class InterestJobCompletionListener implements JobExecutionListener {
     } else {
       logger.info("Job finalizado exitosamente: {}", jobExecution.getJobInstance().getJobName());
       
-      // Escribir los registros omitidos en errores-transacciones.csv
       List<InterestInput> skippedItems = InterestSkipListener.skippedItems;
-      logger.info("WRITING ERRORS - Iniciando escritura de {} registros omitidos al archivo CSV", skippedItems.size());
+      logger.info("Iniciando escritura de {} registros inválidos al archivo CSV", skippedItems.size());
 
       if (!skippedItems.isEmpty()) {
         try {
@@ -74,10 +73,8 @@ public class InterestJobCompletionListener implements JobExecutionListener {
 
           errorWriter.setLineAggregator(lineAggregator);
 
-          // Abrir writer
           errorWriter.open(new ExecutionContext());
 
-          // Escribir todos los registros omitidos (convertir List a Chunk)
           Chunk<InterestInput> chunk = new Chunk<>(skippedItems);
           errorWriter.write(chunk);
           

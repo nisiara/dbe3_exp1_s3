@@ -15,25 +15,22 @@ public class InterestMapper implements FieldSetMapper<InterestInput>{
     
     InterestInput input = new InterestInput();
     
-    // Manejar cuenta_id que puede estar vacío
     try {
       input.setCuenta_id(fieldSet.readInt("cuenta_id"));
     } catch (Exception e) {
-      input.setCuenta_id(0); // Valor por defecto para que el processor lo maneje
+      input.setCuenta_id(0);
     }
 
-    // Manejar saldo que puede estar vacío o nulo
     try {
       input.setSaldo(fieldSet.readInt("saldo"));
     } catch (Exception e) {
-      input.setSaldo(null); // Si no se puede leer, setear como null para que el processor lo maneje
+      input.setSaldo(null);
     }
     
-    // Manejar edad que puede estar vacía
     try {
       input.setEdad(fieldSet.readInt("edad"));
     } catch (Exception e) {
-      input.setEdad(0); // Valor por defecto para que el processor lo maneje
+      input.setEdad(0);
     }
     
     input.setNombre(fieldSet.readString("nombre"));

@@ -44,11 +44,9 @@ public class TransactionJobCompletionListener implements JobExecutionListener {
   public void beforeJob(@NonNull JobExecution jobExecution) {
     logger.info("Iniciando el Job: {}", jobExecution.getJobInstance().getJobName());
     
-    // Limpiar la lista de registros omitidos del job anterior para evitar duplicaciones
     TransactionSkipListener.skippedItems.clear();
     logger.info("Lista de registros omitidos limpiada para nueva ejecución");
     
-    // Eliminar archivo de errores anterior si existe
     try {
       java.io.File errorFile = new java.io.File("errores-transacciones.csv");
       if (errorFile.exists()) {
@@ -63,23 +61,9 @@ public class TransactionJobCompletionListener implements JobExecutionListener {
     }
   }
 
-  /**
-   * Se ejecuta después de completar el job (exitoso o con errores).
-   * Si el job fue exitoso, toma todos los registros omitidos acumulados en
-   * TransactionSkipListener y los escribe en un archivo CSV llamado "errores-transacciones.csv".
-   * 
-   * Este método:
-   * 1. Verifica el estado del job
-   * 2. Si fue exitoso, obtiene los registros omitidos del TransactionSkipListener
-   * 3. Crea un FlatFileItemWriter para el archivo de errores
-   * 4. Escribe todos los registros omitidos con sus headers
-   * 5. Cierra el writer y reporta la cantidad de registros guardados
-   * 
-   * @param jobExecution Contexto de ejecución del job que contiene el estado final
-   */
   @Override
   public void afterJob(@NonNull JobExecution jobExecution) {
-    logger.info("AFTER JOB - Job status: {}, Skipped items count: {}", 
+    logger.info("Job status: {}, items omitidos: {}", 
                 jobExecution.getStatus(), TransactionSkipListener.skippedItems.size());
                 
     if (jobExecution.getStatus().isUnsuccessful()) {
@@ -87,18 +71,15 @@ public class TransactionJobCompletionListener implements JobExecutionListener {
     } else {
       logger.info("Job finalizado exitosamente: {}", jobExecution.getJobInstance().getJobName());
       
-      // Escribir los registros omitidos en errores-transacciones.csv
       List<TransactionInput> skippedItems = TransactionSkipListener.skippedItems;
-      logger.info("WRITING ERRORS - Iniciando escritura de {} registros omitidos al archivo CSV", skippedItems.size());
+      logger.info("Iniciando escritura de {} registros omitidos al archivo CSV", skippedItems.size());
 
       if (!skippedItems.isEmpty()) {
         try {
-          // Crear FlatFileItemWriter para archivo de errores
           FlatFileItemWriter<TransactionInput> errorWriter = new FlatFileItemWriter<>();
           errorWriter.setResource(new FileSystemResource("errores-transacciones.csv"));
           errorWriter.setHeaderCallback(writer -> writer.write("id,fecha,monto,tipo"));
 
-          // Configurar line aggregator
           DelimitedLineAggregator<TransactionInput> lineAggregator = new DelimitedLineAggregator<>();
           lineAggregator.setDelimiter(",");
 
@@ -108,22 +89,19 @@ public class TransactionJobCompletionListener implements JobExecutionListener {
 
           errorWriter.setLineAggregator(lineAggregator);
 
-          // Abrir writer
           errorWriter.open(new ExecutionContext());
 
-          // Escribir todos los registros omitidos (convertir List a Chunk)
           Chunk<TransactionInput> chunk = new Chunk<>(skippedItems);
           errorWriter.write(chunk);
           
-          // Cerrar writer
           errorWriter.close();
           
-          logger.info("WRITING ERRORS - Se escribieron {} registros omitidos en errores-transacciones.csv", skippedItems.size());
+          logger.info("Se escribieron {} registros omitidos en errores-transacciones.csv", skippedItems.size());
         } catch (Exception e) {
-          logger.error("WRITING ERRORS - Error al escribir archivo de errores: {}", e.getMessage(), e);
+          logger.error("Error al escribir archivo de errores: {}", e.getMessage(), e);
         }
       } else {
-        logger.info("WRITING ERRORS - No hay registros omitidos para escribir");
+        logger.info("No hay datos inválidos para registrar");
       }
     }
   }

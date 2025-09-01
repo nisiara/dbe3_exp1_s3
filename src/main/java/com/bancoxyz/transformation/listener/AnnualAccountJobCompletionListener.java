@@ -45,26 +45,22 @@ public class AnnualAccountJobCompletionListener implements JobExecutionListener 
 
   @Override
   public void afterJob(@NonNull JobExecution jobExecution) {
-    logger.info("Job status: {}, Skipped items count: {}", 
-                jobExecution.getStatus(), AnnualAccountSkipListener.skippedItems.size());
+    logger.info("Job status: {}, items omitidos: {}", jobExecution.getStatus(), AnnualAccountSkipListener.skippedItems.size());
                 
     if (jobExecution.getStatus().isUnsuccessful()) {
       logger.error("Job finalizado con errores: {}", jobExecution.getJobInstance().getJobName());
     } else {
       logger.info("Job finalizado exitosamente: {}", jobExecution.getJobInstance().getJobName());
       
-      // Escribir los registros omitidos en csv de errores
       List<AnnualAccountInput> skippedItems = AnnualAccountSkipListener.skippedItems;
-      logger.info("Iniciando escritura de {} registros omitidos al archivo CSV", skippedItems.size());
+      logger.info("Iniciando escritura de {} registros considerados inválidos al archivo CSV", skippedItems.size());
 
       if (!skippedItems.isEmpty()) {
         try {
-          // Crear FlatFileItemWriter para archivo de errores
           FlatFileItemWriter<AnnualAccountInput> errorWriter = new FlatFileItemWriter<>();
           errorWriter.setResource(new FileSystemResource("errores-cuentas-anuales.csv"));
           errorWriter.setHeaderCallback(writer -> writer.write("cuenta_id,fecha,transaccion,monto,descripcion"));
 
-          // Configurar line aggregator
           DelimitedLineAggregator<AnnualAccountInput> lineAggregator = new DelimitedLineAggregator<>();
           lineAggregator.setDelimiter(",");
 

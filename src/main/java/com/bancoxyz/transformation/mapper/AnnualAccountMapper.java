@@ -17,11 +17,10 @@ public class AnnualAccountMapper implements FieldSetMapper<AnnualAccountInput>{
     input.setCuenta_id(fieldSet.readInt("cuenta_id"));
     input.setFecha(fieldSet.readString("fecha")); // Mapeo directo como String
     
-    // Manejar monto que puede estar vacío o nulo
     try {
       input.setMonto(fieldSet.readInt("monto"));
     } catch (Exception e) {
-      input.setMonto(null); // Si no se puede leer, setear como null para que el processor lo maneje
+      input.setMonto(null);
     }
     
     input.setTransaccion(fieldSet.readString("transaccion"));

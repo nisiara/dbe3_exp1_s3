@@ -65,14 +65,14 @@ public class AnnualAccountItemProcessor implements ItemProcessor<AnnualAccountIn
     
     String trimmedDate = dateString.trim();
     
-    // Intentar parsear con cada formato soportado
+    
     for (DateTimeFormatter formatter : DATE_FORMATTERS) {
       try {
         LocalDate date = LocalDate.parse(trimmedDate, formatter);
         logger.debug("Fecha parseada exitosamente: {} -> {}", dateString, date);
         return date;
       } catch (DateTimeParseException e) {
-        // Continuar con el siguiente formato
+        
         logger.debug("No se pudo parsear '{}' con formato {}", dateString, formatter);
       }
     }

@@ -26,14 +26,13 @@ public class InterestItemReader implements ItemReader<InterestInput>, ItemStream
       .delimited()
       .names("cuenta_id", "nombre", "saldo", "edad", "tipo") 
       .fieldSetMapper(new InterestMapper())
-      //.targetType(InterestInput.class) 
       .build();
     this.interestReader.setStrict(false); 
   }
 
   @Override
   public InterestInput read() throws Exception {
-    return interestReader.read(); // Delegado para la lectura de cada ítem
+    return interestReader.read(); 
   }
 
   @Override
@@ -46,7 +45,6 @@ public class InterestItemReader implements ItemReader<InterestInput>, ItemStream
     interestReader.close();
   }
 
-    
   @Override
   public void update(@NonNull ExecutionContext executionContext) throws ItemStreamException {
     interestReader.update(executionContext);

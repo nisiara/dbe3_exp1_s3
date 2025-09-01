@@ -21,8 +21,8 @@ public class InterestSkipListener implements SkipListener<InterestInput, Interes
 
   @Override
   public void onSkipInRead(@NonNull Throwable t) {
-    logger.error("ERROR EN LECTURA - Error al leer línea del archivo: {}", t.getMessage());
-    // En caso de error de lectura, creamos un InterestInput con valores por defecto para registrar el error
+    logger.error("Error al leer línea del archivo: {}", t.getMessage());
+    
     InterestInput errorItem = new InterestInput();
     errorItem.setCuenta_id(0);
     errorItem.setNombre("ERROR_LECTURA");
@@ -43,14 +43,12 @@ public class InterestSkipListener implements SkipListener<InterestInput, Interes
 
   @Override
   public void onSkipInProcess(@NonNull InterestInput item, @NonNull Throwable t) {
-    logger.warn("SKIP DETECTED - Item omitido durante procesamiento: ID={}", item);
+    logger.warn("Item omitido durante procesamiento: ID={}", item);
     
     synchronized (skippedItems) {
       skippedItems.add(item);
       logger.debug("Total elementos omitidos hasta ahora: {}", skippedItems.size());
     }
   }
-
-
 
 }
