@@ -1,16 +1,21 @@
-# Desarrollo Backend 3 | Exp1-S1
+# Desarrollo Backend 3 | Exp1-S3
 
 
 ## Objetivo del proyecto
 
-En este proyecto y semana 3, se implementará un sistema de migración de datos en lotes utilizando Spring Batch, con el objetivo de modernizar el sistema legacy del Banco XYZ. El enfoque es procesar tres archivos claves: `transacciones.csv`, `intereses.csv` y `cuenta-anuales.csv`.
-El proyecto tiene configurado con una estructura ordenada con Exceptions, Listeners, Mappers, Processors, Readers para leer los archivos CSV y aplicar transformaciones y validaciones básicas. Por otro lado, los datos procesados son escritos en una base de datos relacional utilizando MySQL y los datos considerados erroneos son guardados en su respectivo archivo csv.
+En este proyecto de la semana 3 implementará un sistema de migración de datos en lotes utilizando Spring Batch, con el objetivo de modernizar el sistema legacy del Banco XYZ. El objetivo es procesar tlos siguientes archivos: `transacciones.csv`, `intereses.csv` y `cuenta-anuales.csv`.
+
+
+Cada proceso tiene validaciones y manejo de errores junto con la transformación de fechas a un formato estandar, omisión de filas inválidas, tolerancia a fallos y procesamiento paralelo. 
+
+
+Finalizado el proceso, los datos considerados correctos son escritos en una base de datos relacional utilizando MySQL y los datos inválidos son guardados en su respectivo archivo csv.
 
 
 ## 🛠️ Requisitos
 - Java 21
 - Maven 4.0
-- Docker (opcional)
+- Docker
 - Dependencias
   - Spring Web
   - Spring Data JPA
@@ -18,8 +23,6 @@ El proyecto tiene configurado con una estructura ordenada con Exceptions, Listen
   - Spring Batch
   - Spring Boot Dev Tools
   - Lomkok
-
-
 
 
 ## 💾 Creación base de datos
@@ -36,21 +39,20 @@ docker build -t bancoxyz-db-image .
 ```
 
 
-
 ## ↔️ API Reference para porcesos batch.
 
 #### Crear batch de archivo cuentas_anuales.csv
-``` http
+```bash
 curl -X POST http://localhost:8080/batch/annual-account-job
 ```
 
 #### Crear batch de archivo intereses.csv
-``` http
+```bash
 curl -X POST http://localhost:8080/batch/interest-job
 ```
 
 #### Crear batch de archivo transacciones.csv
-``` http
+```bash
 curl -X POST http://localhost:8080/batch/transaction-job
 ```
 
@@ -64,4 +66,4 @@ SELECT * FROM tbl_interests;
 ```
 
 ## 🔗 Link
-[![Github](https://img.shields.io/badge/github-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/nisiara/dbe3_exp1_s1.git)
+[![Github](https://img.shields.io/badge/github-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/nisiara/dbe3_exp1_s3.git)
