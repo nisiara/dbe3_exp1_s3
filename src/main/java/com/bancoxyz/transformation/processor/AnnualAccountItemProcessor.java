@@ -30,7 +30,7 @@ public class AnnualAccountItemProcessor implements ItemProcessor<AnnualAccountIn
   @Override
   public AnnualAccount process(@NonNull AnnualAccountInput item) throws Exception {
     
-    logger.debug("Realizando proceso en hilo: {} - Procesando item ID: {}, ", item);
+    logger.debug("Realizando proceso en hilo: {} - Procesando item ID: {}", Thread.currentThread().getName());
     
     if (item.getMonto() == null) {
       logger.warn("DATAO INVALIDO - Transacción con monto null encontrada y será omitida: ", item);
